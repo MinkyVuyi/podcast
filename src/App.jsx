@@ -2,19 +2,15 @@ import About from './Components/Pages/About';
 import Home from './Components/Pages/Home';
 import Podcasts from './Components/Pages/Podcasts';
 import ShowDetails from './Components/Pages/ShowDetails';
-
+import Favourites from './Components/Favourites';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
-
+import AuthPage from './Components/Pages/AuthPage';
 
 function App() {
   return (
 <BrowserRouter>
-
-
 <header className="bg-dark">
-
 <nav className="nav nav-pills flex-row P-2">
-  
   <Link to="/" className="flex-sm-fill text-sm-center nav-link  text-light" aria-current="page" href="#">Home</Link>
   <a className="flex-sm-fill text-sm-center nav-link dropdown-toggle text-light" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Genres</a>
   <ul className="dropdown-menu">
@@ -30,17 +26,18 @@ function App() {
     </ul>
     <Link to="/podcasts" className="flex-sm-fill text-sm-center nav-link text-light" href="#">Podcasts</Link>
   <Link to="/about" className="flex-sm-fill text-sm-center nav-link text-light" href="#">About</Link>
-  
+  <Link to="/favourites" className="flex-sm-fill text-sm-center nav-link text-light" href="#">Favourites</Link>
+  <Link to="/auth" className="flex-sm-fill text-sm-center nav-link text-light">Get Started</Link>
 </nav>
 </header>
-
-
 
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/podcasts" element={<Podcasts />} />
         <Route path="/podcasts/:id" element={<ShowDetails />} />
+        <Route path="/favourites" element={<Favourites />} />
+        <Route path="/auth" element={<AuthPage />} />
       </Routes>
     </BrowserRouter>
   )

@@ -1,6 +1,7 @@
-import  { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import 'bootstrap-icons/font/bootstrap-icons.css'; 
+import 'bootstrap-icons/font/bootstrap-icons.css';
+import Fuse from 'fuse.js';
 
 const Podcasts = () => {
   const [favorites, setFavorites] = useState(() => {
@@ -61,75 +62,144 @@ const Podcasts = () => {
     return <div>Loading...</div>;
   }
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    const filteredShows = shows.filter((show) =>
-      show.title.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setShows(filteredShows);
+  const fuseOptions = {
+    keys: ['title', 'description'], // Define the properties to search within
+    includeMatches: true, // To get highlighted results
   };
 
+  const [fuse, setFuse] = useState(null); // Initialize Fuse instance
+
+  useEffect(() => {
+    if (!fuse) {
+      setFuse(new Fuse(shows, fuseOptions));
+    }
+  }, [fuse, shows]);
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (fuse) {
+      const results = fuse.search(searchTerm);
+      const filteredShows = results.map((result) => result.item);
+  
+      setShows(filteredShows);
+    }
+  };
   return (
     <div className="container">
       <h2>All Shows</h2>
       <div className="row mb-3">
         <div className="col">
           <div className="btn-group">
-            <button className="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <button
+              className="btn btn-secondary dropdown-toggle"
+              type="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
               Sort by
             </button>
             <ul className="dropdown-menu">
-              <li><button className="dropdown-item" onClick={() => handleFilterChange('A-Z')}>A-Z</button></li>
-              <li><button className="dropdown-item" onClick={() => handleFilterChange('Z-A')}>Z-A</button></li>
-              <li><button className="dropdown-item" onClick={() => handleFilterChange('ascending')}>Ascending Order</button></li>
-              <li><button className="dropdown-item" onClick={() => handleFilterChange('descending')}>Descending Order</button></li>
+              <li>
+                <button
+                  className="dropdown-item"
+                  onClick={() => handleFilterChange('A-Z')}
+                >
+                  A-Z
+                </button>
+              </li>
+              <li>
+                <button
+                  className="dropdown-item"
+                  onClick={() => handleFilterChange('Z-A')}
+                >
+                  Z-A
+                </button>
+              </li>
+              <li>
+                <button
+                  className="dropdown-item"
+                  onClick={() => handleFilterChange('ascending')}
+                >
+                  Ascending Order
+                </button>
+              </li>
+              <li>
+                <button
+                  className="dropdown-item"
+                  onClick={() => handleFilterChange('descending')}
+                >
+                  Descending Order
+                </button>
+              </li>
             </ul>
           </div>
         </div>
         <div className="col">
           <form className="d-flex mx-auto" onSubmit={handleSearch}>
-            <input className="form-control  rounded-pill border border-5 fs-2 ms-5" type="search" placeholder="Search" aria-label="Search"/>
+            <input
+              className="form-control  rounded-pill border border-5 fs-2 ms-5"
+              type="search"
+              placeholder="Search"
+              aria-label="Search"
+            />
             <button className="btn btn-outline-secondary ms-3" type="submit">
               Search
             </button>
           </form>
         </div>
       </div>
+  
       <div className="row">
-        {shows.sort(sortShows).map((show) => (
-          <div key={show.id} className="col-md-3 mb-4">
-            <Link className="link-underline link-underline-opacity-0" to={`/podcasts/${show.id}`}>
-              <div className="card" style={{ width: '18rem' }}>
-                <img src={show.image} alt={show.title} className="card-img-top" />
-                <div className="card-body">
-                  <h5 className="card-title">{show.title}</h5>
-                  <p className="card-text">
-                    {show.description.length > 100 ? show.description.slice(0, 100) + '...' : show.description}
-                  </p>
+        {shows.length === 0 ? (
+          <p>No shows found. Try a different search term.</p>
+        ) : (
+          shows.sort(sortShows).map((show) => (
+            <div key={show.id} className="col-md-3 mb-4">
+              <Link
+                className="link-underline link-underline-opacity-0"
+                to={`/podcasts/${show.id}`}
+              >
+                <div className="card" style={{ width: '18rem' }}>
+                  <img
+                    src={show.image}
+                    alt={show.title}
+                    className="card-img-top"
+                  />
+                  <div className="card-body">
+                    <h5 className="card-title">{show.title}</h5>
+                    <p className="card-text">
+                      {show.description.length > 100
+                        ? show.description.slice(0, 100) + '...'
+                        : show.description}
+                    </p>
+                  </div>
+  
+                  <ul className="list-group list-group-flush">
+                    <li className="list-group-item">
+                      Last Updated: {formatDate(show.updated)}
+                    </li>
+                    <li className="list-group-item">Genres: {show.genres}</li>
+                    <li className="list-group-item">
+                      <Link to={`/podcasts/${show.id}/seasons`} className="btn btn-secondary">
+                        Seasons
+                      </Link>
+                    </li>
+                    <button
+                      onClick={() => toggleFavorite(show.id)}
+                      className={`btn ${isFavorite(show.id) ? 'btn-danger' : 'btn-secondary'}`}
+                    >
+                      <i className={`bi-heart${isFavorite(show.id) ? '-fill' : ''}`}></i>
+                    </button>
+                  </ul>
                 </div>
-                <ul className="list-group list-group-flush">
-                  <li className="list-group-item">Last Updated: {formatDate(show.updated)}</li>
-                  <li className="list-group-item">Genres: {show.genres}</li>
-                  <li className="list-group-item">
-                    <Link to={`/podcasts/${show.id}/seasons`} className="btn btn-secondary">
-                      Seasons
-                    </Link>
-                  </li>
-                  <button
-                    onClick={() => toggleFavorite(show.id)}
-                    className={`btn ${isFavorite(show.id) ? 'btn-danger' : 'btn-secondary'}`}
-                  >
-                    <i className={`bi-heart${isFavorite(show.id) ? '-fill' : ''}`}></i>
-                  </button>
-                </ul>
-              </div>
-            </Link>
-          </div>
-        ))}
+              </Link>
+            </div>
+          ))
+        )}
       </div>
     </div>
-  );
-};
+  )};
+                      
 
 function formatDate(dateString) {
   const options = { day: 'numeric', month: 'numeric', year: 'numeric' };

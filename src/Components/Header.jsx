@@ -11,7 +11,7 @@ export default function Header() {
   <h1 className="text-light pt-5 px-4 mb-0">Unplugged</h1>
 </div>
 </div>
-  <nav className="navbar ">
+  <nav className="navbar">
   <div className="container-fluid ">
     
   </div>
