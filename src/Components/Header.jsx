@@ -1,22 +1,12 @@
+import React from "react";
+import Navbar from "./Navbar";
 
-export default function Header() {
-  return (
-    <div className="bg-dark" >
-     <div className="container p-1">
-  <div className="d-flex flex-row mb-3 justify-content-center me-5">
-  <div className="p2">
-    <img src="data:image/png;base64,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" alt="mic" className=" img-thumbnail mt-3 " width="120" height="120"/>
-    </div>
-    <div className="p2">
-  <h1 className="text-light pt-5 px-4 mb-0">Unplugged</h1>
-</div>
-</div>
-  <nav className="navbar">
-  <div className="container-fluid ">
-    
-  </div>
-</nav>
-  </div>
-  </div>
-  )
+function Header () {
+    return (
+        <header>
+            <Navbar />
+        </header>
+    )
 }
+
+export default Header;

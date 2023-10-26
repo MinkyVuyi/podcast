@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { createClient } from '@supabase/supabase-js';
 
 const AuthPage = () => {
   const [email, setEmail] = useState('');

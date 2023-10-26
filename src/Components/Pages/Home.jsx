@@ -1,6 +1,6 @@
 import React from 'react';
-import ShowList from '../ShowList';
-import Header from '../Header'
+import ShowList from './../ShowList';
+import Header from './../Header';
 
 const Home = () => {
 
