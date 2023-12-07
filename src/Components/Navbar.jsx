@@ -31,7 +31,7 @@ const Navbar = () => {
           Podcasts
         </Link>
         <Link to="/about" className="flex-sm-fill text-sm-center nav-link text-light" href="#">
-          About
+          About Us
         </Link>
         <Link to="/favourites" className="flex-sm-fill text-sm-center nav-link text-light" href="#">
           Favourites

@@ -56,12 +56,11 @@ ShowList.propTypes = {
       seasons: PropTypes.number.isRequired,
       updated: PropTypes.string.isRequired,
       genres: PropTypes.arrayOf(PropTypes.string).isRequired,
-      // Add more PropTypes as needed for other properties of the 'shows' object
+     
     })
   ).isRequired,
 };
 
-// Function to format the date
 function formatDate(dateString) {
   const options = { day: 'numeric', month: 'numeric', year: 'numeric' };
   const date = new Date(dateString);
